@@ -1,0 +1,24 @@
+
+# load json file into R and make it to data.frame
+```{r}
+library(jsonlite)
+library(dplyr)
+flight <- fromJSON("/Users/Natsume/Documents/D3_dc/Vega/flights2k.json")
+flight %>% glimpse()
+```
+
+
+# convert date-time string into POSIXct, Date, Hr-Min
+```{r}
+library(lubridate)
+flight %>% mutate(date_time=date %>% as.POSIXct()) %>% glimpse()
+flight %>% mutate(date_time=date %>% as.POSIXct(), Date=date_time %>% as.Date(), Time=date %>% substr(12,nchar(date)) %>% hm()) %>% glimpse()
+
+flight1 <- flight %>% mutate(date_time=date %>% as.POSIXct(), Date=date_time %>% as.Date(), Time=date %>% substr(12,nchar(date)) %>% hm(), Hour=Time %>% hour())
+flight1 %>% glimpse() %>% View()
+```
+
+```{r}
+flight1 %>% group_by(Date, Hour) %>% arrange(Date, Hour) %>% summarise(HourC=n()) %>% View()
+```
+
